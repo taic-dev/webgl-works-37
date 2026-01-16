@@ -1,0 +1,34 @@
+@use "../base/variables" as *;
+@use "../base/functions" as *;
+@use "../base/mixins" as *;
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  padding: 8px;
+  mix-blend-mode: difference;
+  color: $color-white;
+}
+.header__title {
+  position: relative;
+  font-size: 32px;
+  margin-top: 28px;
+}
+.header__title__number {
+  position: absolute;
+  top: -26px;
+  left: 0;
+  font-size: 16px;
+  font-weight: normal;
+}
+.header__list {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.header__link {
+  font-size: 16px;
+  text-decoration: underline;
+}

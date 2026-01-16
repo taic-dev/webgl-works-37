@@ -4,7 +4,7 @@ import fragmentShader from "../../shader/mv/fragmentShader.glsl"
 import vertexShader from "../../shader/mv/vertexShader.glsl"
 import { getElementPositionAndSize, ElementPositionAndSize } from "../utils/getElementSize";
 
-export class MvMesh {
+export class Caustics {
   setup: Setup
   element: HTMLImageElement | null
   mesh: THREE.Mesh | null

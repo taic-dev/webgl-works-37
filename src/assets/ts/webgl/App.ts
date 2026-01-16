@@ -1,31 +1,31 @@
-import { MvMesh } from "./MvMesh";
+import { Caustics } from "./Caustics";
 import { Setup } from "./Setup";
 
 export class App {
   setup: Setup
-  mvMesh: MvMesh
+  caustics: Caustics
 
   constructor() {
     this.setup = new Setup();
-    this.mvMesh = new MvMesh(this.setup);
+    this.caustics = new Caustics(this.setup);
   }
 
   init() {
-    this.mvMesh.init();
+    this.caustics.init();
   }
 
   render() {
     if(!this.setup.scene || !this.setup.camera) return
     this.setup.renderer?.render(this.setup.scene, this.setup.camera)
-    this.mvMesh.raf();
+    this.caustics.raf();
   }
 
   update() {
-    this.mvMesh.updateMesh();
+    this.caustics.updateMesh();
   }
 
   resize() {
     this.setup.resize();
-    this.mvMesh.resize();
+    this.caustics.resize();
   }
 }

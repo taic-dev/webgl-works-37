@@ -1,17 +1,21 @@
 import { Caustics } from "./Caustics";
 import { Setup } from "./Setup";
+import { TiledWall } from "./TiledWall";
 
 export class App {
   setup: Setup
   caustics: Caustics
+  tiledWall: TiledWall
 
   constructor() {
     this.setup = new Setup();
     this.caustics = new Caustics(this.setup);
+    this.tiledWall = new TiledWall(this.setup);
   }
 
   init() {
-    this.caustics.init();
+    // this.caustics.init();
+    this.tiledWall.init();
   }
 
   render() {

@@ -32,10 +32,10 @@ export class Setup {
     this.setRenderer();
     this.setScene();
     this.setCamera();
-    // this.setAmbientLight();
-    // this.setDirectionalLight();
+    this.setAmbientLight();
+    this.setDirectionalLight();
     this.setGui();
-    // this.setHelper();
+    this.setHelper();
   }
 
   setRenderer() {
@@ -61,10 +61,7 @@ export class Setup {
       PARAMS.CAMERA.NEAR,
       PARAMS.CAMERA.FAR
     );
-    const fovRad = (PARAMS.CAMERA.FOV / 2) * (Math.PI / 180);
-    const dist = window.innerHeight / 2 / Math.tan(fovRad);
-
-    this.camera.position.set(0, 0, dist);
+    this.camera.position.set(500, 100, 1000);
     this.camera.lookAt(new THREE.Vector3());
   }
 
@@ -72,9 +69,7 @@ export class Setup {
     if (!this.camera) return;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera?.updateProjectionMatrix();
-    const fovRad = (PARAMS.CAMERA.FOV / 2) * (Math.PI / 180);
-    const dist = window.innerHeight / 2 / Math.tan(fovRad);
-    this.camera.position.set(0, 0, dist);
+    this.camera.position.set(500, 100, 1000);
     this.camera.lookAt(new THREE.Vector3());
   }
 
@@ -87,6 +82,11 @@ export class Setup {
   setAmbientLight() {
     this.ambientLight = new THREE.AmbientLight(0xffffff, 10)
     this.scene?.add(this.ambientLight);
+  }
+
+  setSpotLight() {
+    this.spotLight = new THREE.SpotLight( 0xffffff );
+    this.spotLight.position.set( 100, 1000, 100 );
   }
 
   setGui() {

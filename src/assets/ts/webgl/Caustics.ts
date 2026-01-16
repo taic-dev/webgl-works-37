@@ -12,7 +12,7 @@ export class Caustics {
 
   constructor(setup: Setup) {
     this.setup = setup
-    this.element = document.querySelector<HTMLImageElement>('.plane')
+    this.element = document.querySelector<HTMLImageElement>('.caustics')
     this.mesh = null
     this.loader = null
   }

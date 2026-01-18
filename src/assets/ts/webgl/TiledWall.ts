@@ -25,10 +25,13 @@ export class TiledWall {
   setMesh() {
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load(`${import.meta.env.BASE_URL}/assets/images/tiled-wall.jpg`);
-    const SIZE = 1000;
+    const SIZE = 10;
     const SIZE_HALF = SIZE / 2;
     const geometry = new THREE.PlaneGeometry( SIZE, SIZE, 1, 1 );
-    this.material = new THREE.MeshBasicMaterial( { map: texture } );
+    this.material = new THREE.MeshLambertMaterial( { 
+      color: new THREE.Color('rgba(152, 238, 255, 1)'),
+      map: texture
+    });
     // tiled-wall right
     this.meshRight = new THREE.Mesh(geometry, this.material);
     this.meshRight.rotation.z = Math.PI / 2;

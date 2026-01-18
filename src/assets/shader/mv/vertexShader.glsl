@@ -1,4 +1,6 @@
 uniform float uTime;
+uniform float uSpeed;
+uniform float uWave;
 
 varying vec2 vUv;
 varying vec3 vPosition;
@@ -15,10 +17,10 @@ void main() {
 
   vec3 pos = position;
 
-  pos.z += cnoise3d(pos * 2. + uTime * 0.2) * 10.;
+  pos.z += cnoise3d(pos * uWave + uTime * uSpeed) * 1.;
 
   vOldPosition = position;
   vNewPosition = pos;
 
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }

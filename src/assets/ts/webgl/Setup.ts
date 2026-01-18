@@ -10,6 +10,8 @@ export class Setup {
   ambientLight: THREE.AmbientLight | null
   directionalLight: THREE.DirectionalLight | null;
   spotLight: THREE.SpotLight | null;
+  spotLight2: THREE.SpotLight | null;
+  spotLightHelper: THREE.SpotLightHelper | null;
   loader: THREE.TextureLoader
   guiValue: any
   controls: OrbitControls | null
@@ -21,6 +23,8 @@ export class Setup {
     this.ambientLight = null;
     this.directionalLight = null;
     this.spotLight = null;
+    this.spotLight2 = null;
+    this.spotLightHelper = null;
     this.controls = null;
     this.guiValue = null
     this.loader = new THREE.TextureLoader();
@@ -32,8 +36,9 @@ export class Setup {
     this.setRenderer();
     this.setScene();
     this.setCamera();
-    this.setAmbientLight();
-    this.setDirectionalLight();
+    // this.setAmbientLight();
+    // this.setDirectionalLight();
+    this.setSpotLight();
     this.setGui();
     this.setHelper();
   }
@@ -42,6 +47,7 @@ export class Setup {
     const element = document.querySelector('.webgl');
     this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     this.renderer.setSize(PARAMS.WINDOW.W, PARAMS.WINDOW.H);
+    this.renderer.shadowMap.enabled = true;
     element?.appendChild(this.renderer.domElement);
   }
 
@@ -52,6 +58,7 @@ export class Setup {
 
   setScene() {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color('rgba(97, 176, 255, 1)')
   }
 
   setCamera() {
@@ -61,7 +68,7 @@ export class Setup {
       PARAMS.CAMERA.NEAR,
       PARAMS.CAMERA.FAR
     );
-    this.camera.position.set(500, 100, 1000);
+    this.camera.position.set(5, 1, 10);
     this.camera.lookAt(new THREE.Vector3());
   }
 
@@ -69,7 +76,7 @@ export class Setup {
     if (!this.camera) return;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera?.updateProjectionMatrix();
-    this.camera.position.set(500, 100, 1000);
+    this.camera.position.set(5, 1, 10);
     this.camera.lookAt(new THREE.Vector3());
   }
 
@@ -85,24 +92,48 @@ export class Setup {
   }
 
   setSpotLight() {
-    this.spotLight = new THREE.SpotLight( 0xffffff );
-    this.spotLight.position.set( 100, 1000, 100 );
+    this.spotLight = new THREE.SpotLight('rgba(255, 255, 255, 1)', 3000)
+    this.spotLight.position.set(10.5, 10, 10.5);
+    this.spotLight.castShadow = true
+    this.spotLight.penumbra = Math.PI / 6
+    this.spotLight.angle = Math.PI / 6
+    this.spotLight.shadow.mapSize = new THREE.Vector2(1000, 1000)
+    
+    // this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
+
+    this.scene?.add(this.spotLight);
+    // this.scene?.add(this.spotLightHelper);
+
+    this.spotLight2 = new THREE.SpotLight('rgba(255, 255, 255, 1)', 3000)
+    this.spotLight2.position.set(50.5, 50, 50.5);
+    this.spotLight2.castShadow = true
+    this.spotLight2.penumbra = Math.PI / 6
+    this.spotLight2.angle = Math.PI / 8
+    this.spotLight2.shadow.mapSize = new THREE.Vector2(1000, 1000)
+    
+    // this.spotLightHelper2 = new THREE.SpotLightHelper( this.spotLight );
+
+    this.scene?.add(this.spotLight2);
+    // this.scene?.add(this.spotLightHelper2);
   }
 
   setGui() {
     const gui = new GUI();
     this.guiValue = {
-      color: { r: 0, g: 0.525, b: 0.702 },
-      uR: 0.23,
-      uG: 0.07,
-      uB: 0,
-      // wireframe: false,
+      // color: { r: 0, g: 0, b: 0 },
+      evening: false,
+      speed: 2,
+      wave: 15,
+      // uR: 0.01, uG: 0.01, uB: 0.01, // white
+      // uR: 0.13, uG: 0.05, uB: 0.02, // orange
     };
-    gui.addColor(this.guiValue, "color");
-    gui.add(this.guiValue, "uR", 0, 1, 0.01);
-    gui.add(this.guiValue, "uG", 0, 1, 0.01);
-    gui.add(this.guiValue, "uB", 0, 1, 0.01);
-    // gui.add(this.guiValue, "wireframe");
+    // gui.addColor(this.guiValue, "color");
+    gui.add(this.guiValue, "evening");
+    gui.add(this.guiValue, "speed", 1, 5, 0.1);
+    gui.add(this.guiValue, "wave", 5, 25, 1);
+    // gui.add(this.guiValue, "uR", 0, 1, 0.01);
+    // gui.add(this.guiValue, "uG", 0, 1, 0.01);
+    // gui.add(this.guiValue, "uB", 0, 1, 0.01);
   }
 
 
@@ -116,6 +147,12 @@ export class Setup {
     // AxesHelper
     const axesHelper = new THREE.AxesHelper(2000);
     this.scene?.add(axesHelper);
+  }
+
+  updateHelper() {
+    if (this.spotLightHelper) {
+      this.spotLightHelper.update();
+    }
   }
 
   resize() {

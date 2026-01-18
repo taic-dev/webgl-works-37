@@ -14,14 +14,25 @@ export class App {
   }
 
   init() {
-    // this.caustics.init();
+    this.caustics.init();
     this.tiledWall.init();
   }
 
-  render() {
-    if(!this.setup.scene || !this.setup.camera) return
-    this.setup.renderer?.render(this.setup.scene, this.setup.camera)
+  render() {    
+    if(!this.setup.scene || !this.setup.camera || !this.setup.spotLight) return
+    this.setup.updateHelper();
+    
+    // causticsの更新とレンダリング
     this.caustics.raf();
+    this.caustics.render();
+    
+    // SpotLightにテクスチャを設定（レンダリング後に更新）
+    const texture = this.caustics.renderTarget.texture;
+    texture.needsUpdate = true;
+    this.setup.spotLight.map = texture;
+    
+    // メインシーンのレンダリング
+    this.setup.renderer?.render(this.setup.scene, this.setup.camera)
   }
 
   update() {

@@ -6,15 +6,27 @@ import { getElementPositionAndSize, ElementPositionAndSize } from "../utils/getE
 
 export class Caustics {
   setup: Setup
+  renderTarget: THREE.WebGLRenderTarget
+  renderScene: THREE.Scene
+  renderCamera: THREE.OrthographicCamera
   element: HTMLImageElement | null
   mesh: THREE.Mesh | null
   loader: THREE.TextureLoader | null
-
+  
   constructor(setup: Setup) {
     this.setup = setup
+    this.renderTarget = new THREE.WebGLRenderTarget(1024, 1024)
+    this.renderTarget.texture.flipY = false;
+    this.renderTarget.texture.generateMipmaps = false;
+    this.renderScene = new THREE.Scene();
+    this.renderScene.background = new THREE.Color(0x000000);
+    this.renderCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 1000);
+    this.renderCamera.position.set(0, 0, 1);
+    this.renderCamera.lookAt(0, 0, 0);
     this.element = document.querySelector<HTMLImageElement>('.caustics')
     this.mesh = null
     this.loader = null
+
   }
 
   init() {
@@ -31,15 +43,18 @@ export class Caustics {
       uTime: { value: 0.0 },
     };
     
-    const { r, g, b } = this.setup.guiValue.color;
+    // const { r, g, b } = this.setup.guiValue.color;
 
     return {
       uPlanePos: { value: new THREE.Vector2(info.dom.x, info.dom.y) },
       uPlaneSize: { value: new THREE.Vector2(info.dom.width, info.dom.height)},
-      uBackgroundColor: { value: new THREE.Vector3(r, g, b) },
-      uR: { value: this.setup.guiValue.uR },
-      uG: { value: this.setup.guiValue.uG },
-      uB: { value: this.setup.guiValue.uB },
+      uSpeed: { value: this.setup.guiValue.speed },
+      uWave: { value: this.setup.guiValue.wave },
+      uEvening: { value: this.setup.guiValue.evening },
+      // uBackgroundColor: { value: new THREE.Vector3(r, g, b) },
+      // uR: { value: this.setup.guiValue.uR },
+      // uG: { value: this.setup.guiValue.uG },
+      // uB: { value: this.setup.guiValue.uB },
       ...commonUniforms,
     }
   }
@@ -55,24 +70,18 @@ export class Caustics {
       transparent: true,
     })
     this.mesh = new THREE.Mesh(geometry, material);
-    this.setup.scene?.add(this.mesh);
+    this.renderScene.add(this.mesh);
 
-    this.mesh.scale.x = info.dom.width;
-    this.mesh.scale.y = info.dom.height;
-    this.mesh.position.x = info.dom.x;
-    this.mesh.position.y = info.dom.y;
+    // レンダーターゲット用のカメラとmeshの位置を調整
+    this.mesh.position.set(0, 0, 0);
+    this.mesh.scale.set(1, 1, 1);
   }
 
   updateMesh() {
     if(!this.mesh || !this.element) return;
-      const { scale, position } = this.mesh;
       const info = getElementPositionAndSize(this.element);
       
-      scale.x = info.dom.width;
-      scale.y = info.dom.height;
-      position.x = info.dom.x;
-      position.y = info.dom.y;
-
+      // シェーダーのuniformsを更新（DOM要素の情報はシェーダー内で使用される可能性がある）
       const material = (this.mesh.material as any);
       material.uniforms.uPlaneSize.value = new THREE.Vector2(info.dom.width, info.dom.height);
       material.uniforms.uPlanePos.value = new THREE.Vector2(info.dom.x, info.dom.y);
@@ -82,12 +91,22 @@ export class Caustics {
   raf() {
     if (!this.mesh) return;
     const material = (this.mesh.material as any);
-    const { r, g, b } = this.setup.guiValue.color;
     material.uniforms.uTime.value += 0.01;
-    material.uniforms.uBackgroundColor.value = new THREE.Vector3(r, g, b),
-    material.uniforms.uR.value = this.setup.guiValue.uR;
-    material.uniforms.uG.value = this.setup.guiValue.uG;
-    material.uniforms.uB.value = this.setup.guiValue.uB;
+    material.uniforms.uSpeed.value = this.setup.guiValue.speed;
+    material.uniforms.uWave.value = this.setup.guiValue.wave;
+    material.uniforms.uEvening.value = this.setup.guiValue.evening;
+    // const { r, g, b } = this.setup.guiValue.color;
+    // material.uniforms.uBackgroundColor.value = new THREE.Vector3(r, g, b),
+    // material.uniforms.uR.value = this.setup.guiValue.uR;
+    // material.uniforms.uG.value = this.setup.guiValue.uG;
+    // material.uniforms.uB.value = this.setup.guiValue.uB;
+  }
+
+  render() {
+    if(!this.setup.renderer || !this.mesh) return
+    this.setup.renderer.setRenderTarget(this.renderTarget)
+    this.setup.renderer.render(this.renderScene, this.renderCamera)
+    this.setup.renderer.setRenderTarget(null)
   }
 
   resize() {

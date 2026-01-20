@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Setup } from "./Setup";
-import fragmentShader from "../../shader/mv/fragmentShader.glsl"
-import vertexShader from "../../shader/mv/vertexShader.glsl"
+import fragmentShader from "../../shader/caustics/fragmentShader.glsl"
+import vertexShader from "../../shader/caustics/vertexShader.glsl"
 import { getElementPositionAndSize, ElementPositionAndSize } from "../utils/getElementSize";
 
 export class Caustics {

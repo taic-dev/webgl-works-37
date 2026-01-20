@@ -22,3 +22,6 @@ export const PARAMS = {
     },
   },
 }
+
+export const WALL_SIZE = 10
+export const WALL_SIZE_HALF = WALL_SIZE / 2

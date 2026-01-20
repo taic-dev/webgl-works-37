@@ -1,13 +1,17 @@
 import * as THREE from "three";
 import { Setup } from "./Setup";
+import { WALL_SIZE, WALL_SIZE_HALF } from "./constants";
+import texture from "/assets/images/tiled-wall.jpg";
+import normalTexture from "/assets/images/normal-map.png";
 
 export class TiledWall {
   setup: Setup;
-  material: THREE.MeshBasicMaterial | null;
+  material: THREE.MeshStandardMaterial | null;
   meshRight: THREE.Mesh | null;
   meshLeft: THREE.Mesh | null;
   meshBottom: THREE.Mesh | null;
   modelGroup: THREE.Group;
+  loader: THREE.TextureLoader | null
 
   constructor(setup: Setup) {
     this.setup = setup;
@@ -16,39 +20,59 @@ export class TiledWall {
     this.meshLeft = null;
     this.meshBottom = null;
     this.modelGroup = new THREE.Group();
+    this.loader = this.setup.loader
   }
 
   init() {
     this.setMesh();
   }
 
+  setUniforms() {
+    const commonUniforms = {
+      uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uTime: { value: 0.0 },
+    };
+
+    return {
+      uPlaneSize: { value: new THREE.Vector2(WALL_SIZE, WALL_SIZE) },
+      uTexture: { value: this.loader?.load(texture) },
+      uTextureSize: { value: new THREE.Vector2(WALL_SIZE, WALL_SIZE) },
+      uNormalTexture: { value: this.loader?.load(normalTexture) },
+      ...commonUniforms,
+    }
+  }
+
   setMesh() {
+    const geometry = new THREE.PlaneGeometry( WALL_SIZE, WALL_SIZE, 1, 1 );
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load(`${import.meta.env.BASE_URL}/assets/images/tiled-wall.jpg`);
-    const SIZE = 10;
-    const SIZE_HALF = SIZE / 2;
-    const geometry = new THREE.PlaneGeometry( SIZE, SIZE, 1, 1 );
-    this.material = new THREE.MeshLambertMaterial( { 
+    const texture = textureLoader.load(`${import.meta.env.BASE_URL}/assets/images/tiled-wall2.jpg`);
+    const normalTexture = textureLoader.load(`${import.meta.env.BASE_URL}/assets/images/normal-map2.png`);
+    this.material = new THREE.MeshStandardMaterial({
       color: new THREE.Color('rgba(152, 238, 255, 1)'),
-      map: texture
+      map: texture,
+      normalMap: normalTexture,
+      roughness: 0.1,
+      metalness: 0.1,
     });
+
     // tiled-wall right
     this.meshRight = new THREE.Mesh(geometry, this.material);
     this.meshRight.rotation.z = Math.PI / 2;
     // tiled-wall left
     this.meshLeft = this.meshRight.clone();
     this.meshLeft.rotation.x = -Math.PI / 2;
-    this.meshLeft.position.y = -SIZE_HALF;
-    this.meshLeft.position.z = SIZE_HALF;
+    this.meshLeft.position.y = -WALL_SIZE_HALF;
+    this.meshLeft.position.z = WALL_SIZE_HALF;
     // tiled-wall bottom
     this.meshBottom = this.meshRight.clone();
     this.meshBottom.rotation.y = Math.PI / 2;
-    this.meshBottom.position.x = -SIZE_HALF;
-    this.meshBottom.position.z = SIZE_HALF;
+    this.meshBottom.position.x = -WALL_SIZE_HALF;
+    this.meshBottom.position.z = WALL_SIZE_HALF;
     // tiled-wall group
     this.modelGroup.add(this.meshRight, this.meshLeft, this.meshBottom)
-    this.modelGroup.position.x = SIZE_HALF
-    this.modelGroup.position.y = SIZE_HALF
+    this.modelGroup.position.x = WALL_SIZE_HALF
+    this.modelGroup.position.y = WALL_SIZE_HALF
     this.setup.scene?.add(this.modelGroup);
   }
 

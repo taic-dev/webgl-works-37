@@ -121,16 +121,16 @@ export class Setup {
       dark: false,
       speed: 1.5,
       wave: 15,
-      // uR: 0.01, uG: 0.01, uB: 0.01, // white
-      // uR: 0.13, uG: 0.05, uB: 0.02, // orange
+      lightPositionX: 3.5,
+      lightPositionY: 16.5,
+      lightPositionZ: 1.5,
     };
-    // gui.addColor(this.guiValue, "color");
     gui.add(this.guiValue, "dark");
     gui.add(this.guiValue, "speed", 1, 5, 0.1);
     gui.add(this.guiValue, "wave", 5, 25, 1);
-    // gui.add(this.guiValue, "uR", 0, 1, 0.01);
-    // gui.add(this.guiValue, "uG", 0, 1, 0.01);
-    // gui.add(this.guiValue, "uB", 0, 1, 0.01);
+    gui.add(this.guiValue, "lightPositionX", 0, 30, 0.5);
+    gui.add(this.guiValue, "lightPositionY", 0, 30, 0.5);
+    gui.add(this.guiValue, "lightPositionZ", 0, 30, 0.5);
   }
 
 
@@ -158,6 +158,12 @@ export class Setup {
     } else {
       this.directionalLight?.color.set('rgba(146, 134, 0, 1)');
     }
+
+    this.spotLight?.position.set(
+      this.guiValue.lightPositionX,
+      this.guiValue.lightPositionY,
+      this.guiValue.lightPositionZ
+    );
   }
 
   resize() {

@@ -21,6 +21,7 @@ export class App {
   render() {    
     if(!this.setup.scene || !this.setup.camera || !this.setup.spotLight) return
     this.setup.updateHelper();
+    this.setup.raf();
     
     // causticsの更新とレンダリング
     this.caustics.raf();

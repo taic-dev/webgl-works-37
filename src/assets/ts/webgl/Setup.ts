@@ -37,7 +37,7 @@ export class Setup {
     this.setScene();
     this.setCamera();
     // this.setAmbientLight();
-    // this.setDirectionalLight();
+    this.setDirectionalLight();
     this.setSpotLight();
     this.setGui();
     this.setHelper();
@@ -81,8 +81,8 @@ export class Setup {
   }
 
   setDirectionalLight() {
-    this.directionalLight = new THREE.DirectionalLight(0xfff0dd, 5);
-    this.directionalLight.position.set(0, 0, 10);
+    this.directionalLight = new THREE.DirectionalLight('rgba(61, 85, 90, 1)', 1);
+    this.directionalLight.position.set(2, 2, 2);
     this.scene?.add(this.directionalLight);
   }
 
@@ -98,18 +98,15 @@ export class Setup {
     this.spotLight.penumbra = Math.PI / 6
     this.spotLight.angle = Math.PI / 6
     this.spotLight.shadow.mapSize = new THREE.Vector2(1000, 1000)
-    
-    // this.spotLightHelper = new THREE.SpotLightHelper( this.spotLight );
 
     this.scene?.add(this.spotLight);
-    // this.scene?.add(this.spotLightHelper);
 
     this.spotLight2 = new THREE.SpotLight('rgba(255, 255, 255, 1)', 3000)
     this.spotLight2.position.set(50.5, 50, 50.5);
     this.spotLight2.castShadow = true
     this.spotLight2.penumbra = Math.PI / 6
     this.spotLight2.angle = Math.PI / 8
-    this.spotLight2.shadow.mapSize = new THREE.Vector2(1000, 1000)
+    this.spotLight2.shadow.mapSize = new THREE.Vector2(0);
     
     // this.spotLightHelper2 = new THREE.SpotLightHelper( this.spotLight );
 
@@ -121,14 +118,14 @@ export class Setup {
     const gui = new GUI();
     this.guiValue = {
       // color: { r: 0, g: 0, b: 0 },
-      evening: false,
-      speed: 2,
+      dark: false,
+      speed: 1.5,
       wave: 15,
       // uR: 0.01, uG: 0.01, uB: 0.01, // white
       // uR: 0.13, uG: 0.05, uB: 0.02, // orange
     };
     // gui.addColor(this.guiValue, "color");
-    gui.add(this.guiValue, "evening");
+    gui.add(this.guiValue, "dark");
     gui.add(this.guiValue, "speed", 1, 5, 0.1);
     gui.add(this.guiValue, "wave", 5, 25, 1);
     // gui.add(this.guiValue, "uR", 0, 1, 0.01);
@@ -152,6 +149,14 @@ export class Setup {
   updateHelper() {
     if (this.spotLightHelper) {
       this.spotLightHelper.update();
+    }
+  }
+
+  raf() {
+    if(this.guiValue.dark) {
+      this.directionalLight?.color.set('rgba(0, 33, 65, 1)');
+    } else {
+      this.directionalLight?.color.set('rgba(146, 134, 0, 1)');
     }
   }
 

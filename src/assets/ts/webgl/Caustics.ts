@@ -50,7 +50,7 @@ export class Caustics {
       uPlaneSize: { value: new THREE.Vector2(info.dom.width, info.dom.height)},
       uSpeed: { value: this.setup.guiValue.speed },
       uWave: { value: this.setup.guiValue.wave },
-      uEvening: { value: this.setup.guiValue.evening },
+      uDark: { value: this.setup.guiValue.dark },
       // uBackgroundColor: { value: new THREE.Vector3(r, g, b) },
       // uR: { value: this.setup.guiValue.uR },
       // uG: { value: this.setup.guiValue.uG },
@@ -94,7 +94,7 @@ export class Caustics {
     material.uniforms.uTime.value += 0.01;
     material.uniforms.uSpeed.value = this.setup.guiValue.speed;
     material.uniforms.uWave.value = this.setup.guiValue.wave;
-    material.uniforms.uEvening.value = this.setup.guiValue.evening;
+    material.uniforms.uDark.value = this.setup.guiValue.dark;
     // const { r, g, b } = this.setup.guiValue.color;
     // material.uniforms.uBackgroundColor.value = new THREE.Vector3(r, g, b),
     // material.uniforms.uR.value = this.setup.guiValue.uR;

@@ -2,7 +2,7 @@ uniform float uR;
 uniform float uG;
 uniform float uB;
 uniform vec3 uBackgroundColor;
-uniform bool uEvening;
+uniform bool uDark;
 
 varying vec3 vPosition;
 varying vec3 vOldPosition;
@@ -19,7 +19,7 @@ void main() {
 
   vec3 lineColor = vec3(0);
 
-  if(!uEvening) {
+  if(uDark) {
     // white
     lineColor = vec3(0.01);
   } else {

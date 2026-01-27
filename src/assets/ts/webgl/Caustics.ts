@@ -7,22 +7,25 @@ import { getElementPositionAndSize, ElementPositionAndSize } from "../utils/getE
 export class Caustics {
   setup: Setup
   renderTarget: THREE.WebGLRenderTarget
-  renderScene: THREE.Scene
-  renderCamera: THREE.OrthographicCamera
+  scene: THREE.Scene
+  camera: THREE.OrthographicCamera
   element: HTMLImageElement | null
   mesh: THREE.Mesh | null
   loader: THREE.TextureLoader | null
   
   constructor(setup: Setup) {
     this.setup = setup
-    this.renderTarget = new THREE.WebGLRenderTarget(1024, 1024)
-    this.renderTarget.texture.flipY = false;
-    this.renderTarget.texture.generateMipmaps = false;
-    this.renderScene = new THREE.Scene();
-    this.renderScene.background = new THREE.Color(0x000000);
-    this.renderCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 1000);
-    this.renderCamera.position.set(0, 0, 1);
-    this.renderCamera.lookAt(0, 0, 0);
+    this.renderTarget = new THREE.WebGLRenderTarget(1024, 1024, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat
+    })
+    this.renderTarget.texture.colorSpace = THREE.SRGBColorSpace;
+    this.scene = new THREE.Scene();
+    this.scene.background = null;
+    this.camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 1000);
+    this.camera.position.set(0, 0, 1);
+    this.camera.lookAt(0, 0, 0);
     this.element = document.querySelector<HTMLImageElement>('.caustics')
     this.mesh = null
     this.loader = null
@@ -43,18 +46,12 @@ export class Caustics {
       uTime: { value: 0.0 },
     };
     
-    // const { r, g, b } = this.setup.guiValue.color;
-
     return {
       uPlanePos: { value: new THREE.Vector2(info.dom.x, info.dom.y) },
       uPlaneSize: { value: new THREE.Vector2(info.dom.width, info.dom.height)},
       uSpeed: { value: this.setup.guiValue.speed },
       uWave: { value: this.setup.guiValue.wave },
       uDark: { value: this.setup.guiValue.dark },
-      // uBackgroundColor: { value: new THREE.Vector3(r, g, b) },
-      // uR: { value: this.setup.guiValue.uR },
-      // uG: { value: this.setup.guiValue.uG },
-      // uB: { value: this.setup.guiValue.uB },
       ...commonUniforms,
     }
   }
@@ -70,7 +67,7 @@ export class Caustics {
       transparent: true,
     })
     this.mesh = new THREE.Mesh(geometry, material);
-    this.renderScene.add(this.mesh);
+    this.scene.add(this.mesh);
 
     // レンダーターゲット用のカメラとmeshの位置を調整
     this.mesh.position.set(0, 0, 0);
@@ -95,17 +92,12 @@ export class Caustics {
     material.uniforms.uSpeed.value = this.setup.guiValue.speed;
     material.uniforms.uWave.value = this.setup.guiValue.wave;
     material.uniforms.uDark.value = this.setup.guiValue.dark;
-    // const { r, g, b } = this.setup.guiValue.color;
-    // material.uniforms.uBackgroundColor.value = new THREE.Vector3(r, g, b),
-    // material.uniforms.uR.value = this.setup.guiValue.uR;
-    // material.uniforms.uG.value = this.setup.guiValue.uG;
-    // material.uniforms.uB.value = this.setup.guiValue.uB;
   }
 
   render() {
     if(!this.setup.renderer || !this.mesh) return
     this.setup.renderer.setRenderTarget(this.renderTarget)
-    this.setup.renderer.render(this.renderScene, this.renderCamera)
+    this.setup.renderer.render(this.scene, this.camera)
     this.setup.renderer.setRenderTarget(null)
   }
 

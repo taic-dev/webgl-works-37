@@ -73,7 +73,7 @@ export class TiledWall {
     this.modelGroup.add(this.meshRight, this.meshLeft, this.meshBottom)
     this.modelGroup.position.x = WALL_SIZE_HALF
     this.modelGroup.position.y = WALL_SIZE_HALF
-    this.setup.scene?.add(this.modelGroup);
+    this.setup.subScene?.add(this.modelGroup);
   }
 
 }

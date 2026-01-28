@@ -59,8 +59,8 @@ export class Plane {
       })
       this.mesh = new THREE.Mesh(geometry, material);
       this.setup.scene?.add(this.mesh);
-      this.mesh.scale.x = info.dom.width;
-      this.mesh.scale.y = info.dom.height;
+      this.mesh.scale.x = window.innerWidth;
+      this.mesh.scale.y = window.innerHeight;
       this.mesh.position.x = 0;
       this.mesh.position.y = 0;
 
@@ -70,9 +70,8 @@ export class Plane {
 
   updateMesh() {
     if (!this.mesh || !this.element) return;
-    const info = getImagePositionAndSize(this.element);
-    this.mesh.scale.x = info.dom.width;
-    this.mesh.scale.y = info.dom.height;
+    this.mesh.scale.x = window.innerWidth;
+    this.mesh.scale.y = window.innerHeight;
     this.mesh.position.x = 0;
     this.mesh.position.y = 0;
     // const material = (this.mesh.material as any);

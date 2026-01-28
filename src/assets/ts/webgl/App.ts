@@ -23,7 +23,7 @@ export class App {
 
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('complete:loaded'));
-    }, 1000)
+    }, 1500)
   }
 
   render() {    

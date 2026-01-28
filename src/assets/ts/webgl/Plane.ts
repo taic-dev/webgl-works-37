@@ -49,20 +49,24 @@ export class Plane {
   }
 
   setMesh(info: ElementPositionAndSize) {
-    const uniforms = this.setUniforms(info);
-    const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
-    const material = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      fragmentShader: fragmentShader,
-      vertexShader: vertexShader,
+    return new Promise<void>((resolve) => {
+      const uniforms = this.setUniforms(info);
+      const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+      const material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        fragmentShader: fragmentShader,
+        vertexShader: vertexShader,
+      })
+      this.mesh = new THREE.Mesh(geometry, material);
+      this.setup.scene?.add(this.mesh);
+      
+      this.mesh.scale.x = info.dom.width;
+      this.mesh.scale.y = info.dom.height;
+      this.mesh.position.x = info.dom.x;
+      this.mesh.position.y = info.dom.y;
+
+      resolve();
     })
-    this.mesh = new THREE.Mesh(geometry, material);
-    this.setup.scene?.add(this.mesh);
-    
-    this.mesh.scale.x = info.dom.width;
-    this.mesh.scale.y = info.dom.height;
-    this.mesh.position.x = info.dom.x;
-    this.mesh.position.y = info.dom.y;
   }
 
   updateMesh() {

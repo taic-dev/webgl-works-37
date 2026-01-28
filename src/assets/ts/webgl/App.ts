@@ -16,10 +16,14 @@ export class App {
     this.tiledWall = new TiledWall(this.setup);
   }
 
-  init() {
+  async init() {
     this.plane.init();
     this.caustics.init();
-    this.tiledWall.init();
+    await this.tiledWall.init();
+
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('complete:loaded'));
+    }, 1000)
   }
 
   render() {    

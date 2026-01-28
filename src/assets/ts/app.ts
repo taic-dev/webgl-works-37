@@ -9,3 +9,7 @@ window.addEventListener('resize', () => {
   webgl.update()
   webgl.resize()
 })
+
+window.addEventListener('complete:loaded', () => {
+  webgl.plane.animation();
+})

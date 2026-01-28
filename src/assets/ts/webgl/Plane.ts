@@ -1,19 +1,26 @@
 import * as THREE from "three";
+import { gsap } from "gsap";
 import { Setup } from "./Setup";
 import fragmentShader from "../../shader/plane/fragmentShader.glsl"
 import vertexShader from "../../shader/plane/vertexShader.glsl"
-import tiledWall from "/assets/images/tiled-wall2.jpg"
-
-import { ElementPositionAndSize, getElementPositionAndSize, getImagePositionAndSize } from "../utils/getElementSize";
+import texture from "/assets/images/tiled-wall.webp";
+import { 
+  ElementPositionAndSize,
+  getElementPositionAndSize,
+  getImagePositionAndSize
+} from "../utils/getElementSize";
+import { EASING } from "../utils/constant";
 
 export class Plane {
   setup: Setup
   element: HTMLImageElement | null
+  loading: HTMLImageElement
   mesh: THREE.Mesh | null
 
   constructor(setup: Setup) {
     this.setup = setup;
     this.element = document.querySelector<HTMLImageElement>('.webgl')
+    this.loading = document.querySelector('.loading')!;
     this.mesh = null
   }
 
@@ -34,7 +41,7 @@ export class Plane {
     return {
       uPlanePos: { value: new THREE.Vector2(info.dom.x, info.dom.y) },
       uPlaneSize: { value: new THREE.Vector2(info.dom.width, info.dom.height)},
-      uTexture: { value: this.setup.loader.load(tiledWall) },
+      uTexture: { value: this.setup.loader.load(texture) },
       uTextureSize: { value: new THREE.Vector2(info.dom.width, info.dom.height) },
       uOffset: { value: 0 },
       ...commonUniforms,
@@ -66,18 +73,39 @@ export class Plane {
     this.mesh.position.x = info.dom.x;
     this.mesh.position.y = info.dom.y;
     const material = (this.mesh.material as any);
-    material.uniforms.uPlaneSize.value.x = window.innerWidth;
-    material.uniforms.uPlaneSize.value.y = window.innerHeight;
+
+    // material.uniforms.uPlaneSize.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
+    // material.uniforms.uTexture.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
+    // material.uniforms.uTextureSize.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
   }
 
   raf() {
     if (!this.mesh) return;
     const material = (this.mesh.material as any);
-    material.uniforms.uOffset.value = this.setup.guiValue.offset;
+    // material.uniforms.uOffset.value = this.setup.guiValue.offset;
     material.uniforms.uTime.value += 0.01;
   }
 
   resize() {
     this.updateMesh()
+  }
+
+  animation() {
+    if (!this.mesh) return;
+    const tl = gsap.timeline();
+    const material = (this.mesh.material as any);
+
+    tl.to(this.loading, {
+      opacity: 0,
+      duration: 0.5,
+      ease: EASING.MATERIAL
+    }).to(material.uniforms.uOffset, {
+      value: 1,
+      duration: 1,
+      ease: EASING.TRANSFORM,
+      onComplete: () => {
+        this.loading.style.display = "none"
+      }
+    })
   }
 }

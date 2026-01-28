@@ -16,6 +16,7 @@ export class Setup {
   spotLight2: THREE.SpotLight | null;
   spotLightHelper: THREE.SpotLightHelper | null;
   spotLightHelper2: THREE.SpotLightHelper | null;
+  loadingManager: THREE.LoadingManager
   loader: THREE.TextureLoader
   guiValue: any
   controls: OrbitControls | null
@@ -35,7 +36,8 @@ export class Setup {
     this.spotLightHelper2 = null;
     this.controls = null;
     this.guiValue = null
-    this.loader = new THREE.TextureLoader();
+    this.loadingManager = new THREE.LoadingManager();
+    this.loader = new THREE.TextureLoader(this.loadingManager);
 
     this.init();
   }
@@ -51,7 +53,7 @@ export class Setup {
     this.setDirectionalLight();
     this.setSpotLight();
     this.setGui();
-    this.setHelper();
+    // this.setHelper();
   }
 
   setRenderer() {
@@ -82,6 +84,10 @@ export class Setup {
       }
     );
     this.renderTarget.texture.colorSpace = THREE.LinearSRGBColorSpace;
+  }
+
+  updateRendererTarget() {
+    this.renderTarget?.setSize(window.innerWidth, window.innerHeight);
   }
 
   setScene() {
@@ -166,14 +172,15 @@ export class Setup {
 
   setGui() {
     const gui = new GUI();
+    gui.open(false);
     this.guiValue = {
       dark: false,
-      speed: 1.5,
+      speed: 1.1,
       wave: 15,
       lightPositionX: 3.5,
       lightPositionY: 16.5,
       lightPositionZ: 1.5,
-      offset: 0
+      // offset: 0
     };
     gui.add(this.guiValue, "dark");
     gui.add(this.guiValue, "speed", 1, 5, 0.1);
@@ -181,7 +188,7 @@ export class Setup {
     gui.add(this.guiValue, "lightPositionX", 0.5, 30, 0.5);
     gui.add(this.guiValue, "lightPositionY", 0.5, 30, 0.5);
     gui.add(this.guiValue, "lightPositionZ", 0.5, 30, 0.5);
-    gui.add(this.guiValue, "offset", 0, 1, 0.01);
+    // gui.add(this.guiValue, "offset", 0, 1, 0.01);
   }
 
 
@@ -228,6 +235,8 @@ export class Setup {
 
   resize() {
     this.updateRenderer();
+    this.updateRendererTarget();
     this.updateCamera();
+    this.updateSubCamera();
   }
 }

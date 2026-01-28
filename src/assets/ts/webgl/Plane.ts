@@ -6,8 +6,7 @@ import vertexShader from "../../shader/plane/vertexShader.glsl"
 import texture from "/assets/images/tiled-wall.webp";
 import { 
   ElementPositionAndSize,
-  getElementPositionAndSize,
-  getImagePositionAndSize
+  getElementPositionAndSize
 } from "../utils/getElementSize";
 import { EASING } from "../utils/constant";
 

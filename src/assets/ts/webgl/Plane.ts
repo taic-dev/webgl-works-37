@@ -59,11 +59,10 @@ export class Plane {
       })
       this.mesh = new THREE.Mesh(geometry, material);
       this.setup.scene?.add(this.mesh);
-      
       this.mesh.scale.x = info.dom.width;
       this.mesh.scale.y = info.dom.height;
-      this.mesh.position.x = info.dom.x;
-      this.mesh.position.y = info.dom.y;
+      this.mesh.position.x = 0;
+      this.mesh.position.y = 0;
 
       resolve();
     })
@@ -74,8 +73,8 @@ export class Plane {
     const info = getImagePositionAndSize(this.element);
     this.mesh.scale.x = info.dom.width;
     this.mesh.scale.y = info.dom.height;
-    this.mesh.position.x = info.dom.x;
-    this.mesh.position.y = info.dom.y;
+    this.mesh.position.x = 0;
+    this.mesh.position.y = 0;
     // const material = (this.mesh.material as any);
     // material.uniforms.uPlaneSize.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
     // material.uniforms.uTexture.value = new THREE.Vector2(window.innerWidth, window.innerHeight);

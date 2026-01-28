@@ -72,8 +72,7 @@ export class Plane {
     this.mesh.scale.y = info.dom.height;
     this.mesh.position.x = info.dom.x;
     this.mesh.position.y = info.dom.y;
-    const material = (this.mesh.material as any);
-
+    // const material = (this.mesh.material as any);
     // material.uniforms.uPlaneSize.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
     // material.uniforms.uTexture.value = new THREE.Vector2(window.innerWidth, window.innerHeight);
     // material.uniforms.uTextureSize.value = new THREE.Vector2(window.innerWidth, window.innerHeight);

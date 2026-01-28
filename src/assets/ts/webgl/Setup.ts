@@ -92,10 +92,12 @@ export class Setup {
 
   setScene() {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x155f84); 
   }
 
   setSubScene() {
     this.subScene = new THREE.Scene();
+    this.subScene.background = new THREE.Color(0x155f84); 
   }
 
   setSubCamera() {
